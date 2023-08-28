@@ -1,53 +1,53 @@
-﻿#include <iostream>
+﻿/*#include <iostream>
 #include <string>
 
-
-std::string encrypt_caesar(std::string str, int k) {
+std::string encrypt_caesar(std::string str, int encrypt) {
     std::string result = "";
-    for (int i = 0; i < str.length(); i++) {  // проходим по всем символам в стрке (string str)
-        if (isalpha(str[i])) {                 // с помощью функции isalpha() - является ли текущий символ буквой. От A-Z and a-z
-            // исправил здесь
-            int c = str[i] + k;              // если да, то символ сдвигается на "k" позиций в алфавите и сохраняется в переменной "c".  
-            if (isupper(str[i])) {            // с помощью функции isupper() - является ли текущий символ заглавной буквой 
-                if (c > 'Z') {              // выходит ли символ за пределы алфавита при сдвиге на "k"
-                    c -= 26;                // если символ выходит за пределы алфавита, то от него отнимается 26, чтобы символ остался в пределах алфавита
-                }
-                else if (c < 'A') {         // если же символ находится в пределах алфавита
-                    c += 26;                // прибавляется 26, чтобы символ не вышел за пределы алфавита
-                }
-            }
-            else {
-                if (c > 'z') {              // выходит ли символ за пределы алфавита при сдвиге на "k"
-                    c -= 26;                // если символ выходит за пределы алфавита, то от него отнимается 26, чтобы символ остался в пределах алфавита
-                }
-                else if (c < 'a') {         // если же символ находится в пределах алфавита
-                    c += 26;                // прибавляется 26, чтобы символ не вышел за пределы алфавита
-                }
-            }
-            result += c;                    // после проверок символ сохраняется в переменную "result".
+
+    for (int i = 0; i < str.length(); i++) {
+
+        if (str[i] >= 'A' && str[i] <= 'Z') {
+
+            result += (str[i] - 'A' + encrypt) % 26 + 'A';
         }
-        else {
-            result += str[i];                 // если текущий символ не является буквой, то он просто добавляется в "result".
-        }
+            
+        else if (str[i] >= 'a' && str[i] <= 'z')
+            result += (str[i] - 'a' + encrypt) % 26 + 'a';
+        else
+            result += str[i];
     }
-    return result;                          // "result" будет содержать зашифрованную строку "s" с помощью шифра Цезаря со сдвигом "k".
+    return result;
 }
 
-/* В данной функции decrypt_caesar ключ k передается в функцию encrypt_caesar со знаком минус,
-чтобы обратить направление сдвига и расшифровать строку. */
-std::string decrypt_caesar(std::string s, int k) {    
-    return encrypt_caesar(s, -k);
+// поменять буквы
+//std::string encrypt(const std::string& text, std::uint8_t key) {
+//    std::string encryptedText = std::move(text);
+//    for (auto& symbol : encryptedText) {
+//        if (std::isupper(symbol))
+//            symbol = static_cast<char>((symbol + key) <= 'Z' ? (symbol + key) : (symbol + key) - ('Z' - 'A' + 1));
+//
+//        if (std::islower(symbol))
+//            symbol = static_cast<char>((symbol + key) <= 'z' ? (symbol + key) : 'z' - 'a' + 1);
+//    }
+//    return encryptedText;
+//}
+
+std::string decrypt_caesar(std::string str, int k) {
+    return encrypt_caesar(str, (26 - k % 26));
 }
 
 int main() {
+    std::cout << "Input text: " << '\n';
     std::string str;
-    int k;
     std::getline(std::cin, str);
+    int k;
+    std::cout << "Input number: " << '\n';
     std::cin >> k;
     std::cout << encrypt_caesar(str, k) << '\n';
     std::cout << decrypt_caesar(encrypt_caesar(str, k), k) << '\n';
     return 0;
-}
+}*/
+
 
 /* Задание 1. Шифр Цезаря
 Что нужно сделать
@@ -123,3 +123,62 @@ hm btkoz pth neehbhz cdrdqtms lnkkhs zmhl hc drs kzanqtl
 этот символ, зная его номер. Для этого к коду первого символа алфавита 
 (‘a’ или ‘A’) добавляем полученный порядковый номер. */
 
+// Второй вариант лучше, сразу два языка делает
+
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+// Функция шифрования строки с помощью шифра Цезаря с кодировкой cp1251
+string encrypt(string message, int key)
+{
+    string result = "";
+   
+    for (int i = 0; i < message.length(); i++)
+    {
+        unsigned char c = message[i]; // Преобразовать символ в код cp1251
+        int code = c;
+        code = (code + key) % 256; // Применить формулу шифрования Caesar Cipher
+        c = (unsigned char)code; // Конвертировать код обратно в его символьное представление
+        result += c; // Добавить зашифрованный символ в результирующую строку
+    }
+    return result;
+}
+
+// Функция расшифровки строки, зашифрованной шифром Цезаря с кодировкой cp1251
+string decrypt(string message, int key)
+{
+    string result = "";
+   
+    for (int i = 0; i < message.length(); i++)
+    {
+        unsigned char c = message[i]; // Преобразовать символ в код cp1251
+        int code = c;
+        code = (code - key + 256) % 256; // Применить формулу расшифровки шифра Цезаря        
+        c = (unsigned char)code; // Конвертировать код обратно в его символьное представление        
+        result += c; // Добавить расшифрованный символ в результирующую строку
+    }
+    return result;
+}
+
+int main()
+{
+    
+    string massage;
+    cout << "Input the text: ";
+    getline(cin, massage);
+
+    int key = 33;
+    cout << "Input the number: ";
+    cin >> key;
+
+    // зашифровать сообщение
+    cout << (char) encrypt(massage, key) << '\n';
+
+    // расшифровать сообщение
+    cout << (char) decrypt(encrypt(massage, key), key) << '\n';
+
+    return 0;
+
+}
